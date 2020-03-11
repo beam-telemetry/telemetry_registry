@@ -29,11 +29,8 @@ Telemetry Event definitions.
 The Registry should only be added one time and passed your application's name. Add the registry
 as a child to your application's root supervision tree.
 
-```erlang
-[
-    {telemetry_registry, [{application, my_app}]}
-    %% other supervisor children
-]
+```
+Registry = telemetry_registry:child_spec([{application, my_app}])
 ```
 
 ### Viewing Events
