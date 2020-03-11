@@ -5,8 +5,7 @@
   {mod, []},
   {applications,
    [kernel,
-    stdlib,
-    telemetry
+    stdlib
    ]},
   {env,[]},
   {modules, []},
