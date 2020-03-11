@@ -44,7 +44,7 @@ as a child to your application's root supervision tree.
 
 ```elixir
 [
-  {telemetry_registry, [application: :my_app]}
+  {:telemetry_registry, [application: :my_app]}
   # other supervisor children
 ]
 ```
