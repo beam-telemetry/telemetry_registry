@@ -24,12 +24,6 @@ Telemetry Event definitions.
 -telemetry_event [test_app, handler, stop].
 ```
 
-```elixir
-@telemetry_event [:test_app, :handler, :start]
-@telemetry_event [:test_app, :handler, :failure]
-@telemetry_event [:test_app, :handler, :stop]
-```
-
 ### Add the Registry to Your Application
 
 The Registry should only be added one time and passed your application's name. Add the registry
@@ -42,13 +36,6 @@ as a child to your application's root supervision tree.
 ]
 ```
 
-```elixir
-[
-  {:telemetry_registry, [application: :my_app]}
-  # other supervisor children
-]
-```
-
 ### Viewing Events
 
 The defined events can be accessed using `list_events/0`. Events are returned as a list of 
@@ -57,10 +44,6 @@ module it was discovered in.
 
 ```erlang
 telemetry_registry:list_events().
-```
-
-```elixir
-:telemetry_registry.list_events()
 ```
 
 ### Spannable Events
