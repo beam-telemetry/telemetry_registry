@@ -132,8 +132,19 @@ register_module_events(Module, _Application) ->
 
 -spec events_for_module(atom()) -> [telemetry:event_name()].
 events_for_module(Module) ->
-    Info = Module:module_info(),
-    Attributes = proplists:get_value(attributes, Info),
+    Attributes = case code:module_status(Module) of
+                     loaded ->
+                         Module:module_info(attributes);
+                     not_loaded ->
+                         load_from_beam(code:where_is_file(Module));
+                     _ -> []
+                 end,
     proplists:get_all_values(telemetry_event, Attributes).
 
-
+load_from_beam(non_existing) -> [];
+load_from_beam(Path) ->
+    % We cannot use `beam_lib:chunks(Path, [attributes])' there as this will
+    % flatten the attributes, and we need them as separate entries
+    {ok, _, Chunks} = beam_lib:all_chunks(Path),
+    Binary = proplists:get_value("Attr", Chunks),
+    erlang:binary_to_term(Binary).
