@@ -20,7 +20,7 @@ Telemetry Event definitions.
 
 ```erlang
 -telemetry_event [test_app, handler, start].
--telemetry_event [test_app, handler, failure].
+-telemetry_event [test_app, handler, exception].
 -telemetry_event [test_app, handler, stop].
 ```
 
@@ -51,14 +51,14 @@ telemetry_registry:list_events().
 ### Spannable Events
 
 Tracing spans need at least a matching `start` and `stop` event to create a child span.
-Optionally, a `failure` event can be emitted in the case of an exception being raised.
+Optionally, a `exception` event can be emitted in the case of an exception being raised.
 `spannable_events/0` returns a map of all matching (spannable) events that have been
 discovered. These are returned as a map with keys being the event prefix and the value
-being a list of the available events, e.g. `#{[test_app,handler] => [start,stop,failure]}`.
+being a list of the available events, e.g. `#{[test_app,handler] => [start,stop,exception]}`.
 
 ```erlang
 telemetry_registry:spannable_events().
-%% #{[test_app,handler] => [start,stop,failure]}
+%% #{[test_app,handler] => [start,stop,exception]}
 ```
 
 ## Roadmap

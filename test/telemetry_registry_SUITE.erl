@@ -22,12 +22,12 @@ end_per_suite(_Config) ->
 discovers_all_events(_Config) ->
     telemetry_registry:discover_all(),
     Events = telemetry_registry:list_events(),
-    ?assert(9 =:= erlang:length(Events)).
+    ?assertEqual(9, erlang:length(Events)).
 
 determines_spannable_events(_Config) ->
     telemetry_registry:discover_all(),
     Events = telemetry_registry:spannable_events(),
-    ?assert(#{
-              [test_app,handler] => [start,stop,failure],
+    ?assertEqual(#{
+              [test_app,handler] => [start,stop,exception],
               [test_child_app,extra_long,handler] => [start,stop]
-             } =:= Events).
+             }, Events).
