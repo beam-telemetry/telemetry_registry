@@ -16,7 +16,7 @@ issues!
 ## How It Works
 
 The Registry works by walking your entire application tree and examining every module for
-Telemetry Event definitions. 
+Telemetry Event definitions.
 
 ```erlang
 -telemetry_event [test_app, handler, start].
@@ -26,16 +26,21 @@ Telemetry Event definitions.
 
 ### Add the Registry to Your Application
 
-The Registry should only be added one time and passed your application's name. Add the registry
-as a child to your application's root supervision tree.
+After your applications are loaded just run
 
+```erlang
+telemetry_registry:discover_all(my_app).
 ```
-Registry = telemetry_registry:child_spec([{application, my_app}])
+
+Or if you want to load all applications loaded in current VM then you can use:
+
+```erlang
+telemetry_registry:discover_all().
 ```
 
 ### Viewing Events
 
-The defined events can be accessed using `list_events/0`. Events are returned as a list of 
+The defined events can be accessed using `list_events/0`. Events are returned as a list of
 two element tuples of `{Event, Module}` where `Event` is the event name and `Module` is the
 module it was discovered in.
 
@@ -56,11 +61,6 @@ telemetry_registry:spannable_events().
 %% #{[test_app,handler] => [start,stop,failure]}
 ```
 
-```elixir
-:telemetry_registry.spannable_events()
-# %{[:test_app,:handler] => [:start,:stop,:failure]}
-```
-
 ## Roadmap
 
 A few ideas that need to be tested are:
@@ -75,13 +75,12 @@ typespec.
 Currently, this is all done by hand in a section the user has hopefully included in their docs.
 Ideally, this could be an automatically generated section, much the same as `callbacks`, `types`,
 `functions`, etc. which we currently enjoy in HexDocs.
-    
+
 Definitions could double for an event discovery mechanism, so this serves both use cases
 if done well. The question is what the shape of that definition is, if it could leverage
 (or just use) types for the event, and how it works in each language.
-  
+
 ### Shorthand Definition
 
 e.g. `-telemetry_events {prefix, [event1,event2]}`. This could be a separate attribute name or
 macro.
-
