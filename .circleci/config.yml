@@ -50,6 +50,3 @@ workflows:
       - telemetry/build_and_test:
           name: "otp-20"
           version: "20"
-      - telemetry/build_and_test:
-          name: "otp-19"
-          version: "19"
