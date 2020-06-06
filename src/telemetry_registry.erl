@@ -24,16 +24,16 @@ reverse_events(Events) ->
     [lists:reverse(Event) || {Event, _} <- Events].
 
 filter_events(Events) ->
-    lists:filter(fun([Suffix | _]) -> lists:member(Suffix, [start, stop, failure]) end, Events).
+    lists:filter(fun([Suffix | _]) -> lists:member(Suffix, [start, stop, exception]) end, Events).
 
 event_spans(Events) ->
     lists:foldl(fun([start | Event], {AllEvents, Spans}) ->
                         case lists:member([stop | Event], AllEvents) of
                             true ->
                                 SpanPrefix = lists:reverse(Event),
-                                case lists:member([failure | Event], AllEvents) of
+                                case lists:member([exception | Event], AllEvents) of
                                     true ->
-                                        UpdatedSpans = maps:put(SpanPrefix, [start, stop, failure], Spans),
+                                        UpdatedSpans = maps:put(SpanPrefix, [start, stop, exception], Spans),
                                         {AllEvents, UpdatedSpans};
                                     false ->
                                         {Events, maps:put(SpanPrefix, [start, stop], Spans)}
