@@ -20,3 +20,15 @@ rebar.lock
 *~
 !_checkouts
 src/_build
+edoc
+
+/_build
+/cover
+/deps
+/doc
+/.fetch
+erl_crash.dump
+*.ez
+*.beam
+/config/*.secret.exs
+.elixir_ls/

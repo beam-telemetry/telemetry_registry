@@ -7,7 +7,8 @@
 
 all() -> [
   discovers_all_events,
-  determines_spannable_events
+  determines_spannable_events,
+  supports_event_definitions
 ].
 
 init_per_suite(Config) ->
@@ -22,12 +23,25 @@ end_per_suite(_Config) ->
 discovers_all_events(_Config) ->
     telemetry_registry:discover_all(),
     Events = telemetry_registry:list_events(),
-    ?assertEqual(9, erlang:length(Events)).
+    ?assertEqual(10, erlang:length(Events)).
 
 determines_spannable_events(_Config) ->
     telemetry_registry:discover_all(),
     Events = telemetry_registry:spannable_events(),
-    ?assertEqual(#{
-              [test_app,handler] => [start,stop,exception],
-              [test_child_app,extra_long,handler] => [start,stop]
-             }, Events).
+    ?assertEqual([
+              {[test_app,handler], [start,stop,exception]},
+              {[test_child_app,extra_long,handler], [start,stop]}
+             ], Events).
+
+supports_event_definitions(_Config) ->
+    telemetry_registry:discover_all(),
+    Events = telemetry_registry:list_events(),
+    Event = [test_app, handler, stop],
+    {Event, _, #{
+      description := Description,
+      measurements := Measurements,
+      metadata := Metadata
+     }} = lists:keyfind(Event, 1, Events),
+    ?assert(is_binary(Description)),
+    ?assert(is_binary(Measurements)),
+    ?assert(is_binary(Metadata)).
