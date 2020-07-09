@@ -15,6 +15,6 @@ defmodule TestElixirApp do
 
   ## Telemetry
 
-  #{format_telemetry_docs(@telemetry_docs)}
+  #{telemetry_docs()}
   """
 end

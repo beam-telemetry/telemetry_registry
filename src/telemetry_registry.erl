@@ -85,7 +85,7 @@ discover_all() ->
     discover_all([App || {App, _, _} <- application:loaded_applications()]).
 
 %% @doc Discover all declared telemetry events in the given application and its child applications. This is
-%% typically used in libraries leveraging `telemetry_registry` where it would be necessary for the user
+%% typically used in libraries leveraging <pre>telemetry_registry</pre> where it would be necessary for the user
 %% to define what the root application is, e.g. in tracing bridge libraries.
 -spec discover_all(application() | [application()]) -> ok.
 discover_all(Applications) ->

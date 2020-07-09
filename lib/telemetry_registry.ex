@@ -22,6 +22,7 @@ defmodule TelemetryRegistry do
   should start with the name of your application, not a generic name.
 
   **Do:** `[:tesla, :request, :stop]`
+
   **Don't:** `[:http_client, :request, :stop]`
 
   ### Event Definition Format
@@ -40,7 +41,7 @@ defmodule TelemetryRegistry do
   ```
 
   ```erlang
-  #{
+  \#{
     event => [my_app, event, stop],
     description => <<"A description of what the event is and when it is emitted">>,
     measurements => <<"A string containing a pseudo or typespec - see examples">>,
@@ -49,7 +50,7 @@ defmodule TelemetryRegistry do
   ```
 
   #### Elixir
-  
+
   Elixir does not allow for declaring a custom attribute multiple times by default. We have included macros
   to help with this and to provide a way to include event documentation.
 
@@ -57,30 +58,29 @@ defmodule TelemetryRegistry do
   defmodule TestElixirApp do
     use TelemetryRegistry
 
-    telemetry_event(%{
+    telemetry_event %{
       event: [:test_elixir_app, :single, :event],
       description: "emitted when this event happens",
       measurements: "%{duration: non_neg_integer()}",
       metadata: "%{status: status(), name: String.t()}"
-    })
+    }
 
-    telemetry_event([:test_elixir_app, :event, :stop])
+    telemetry_event [:test_elixir_app, :event, :stop]
+
+  @moduledoc \"""
+  Module documentation...
+
+  ## Telemetry
+
+  \#{telemetry_docs()}
+
+  \"""
   end
   ```
 
   Add `use TelemetryRegistry` at the top of your module to prep your module for defining events. This
   handles setting up everything needed to declare events and the very helpful `telemetry_event/1`
   macro.
-
-  ### Event Documentation
-
-  Elixir users can take advantage of automatic documentation formatting in your moduledoc.
-
-  ```
-  ## Telemetry
-
-  #{format_telemetry_docs(@telemetry_docs)}
-  ```
 
   ### Event Discovery
 
@@ -150,65 +150,86 @@ defmodule TelemetryRegistry do
   """
   @type spannable_event() :: :telemetry_registry.spannable_event()
 
-
   defmacro __using__(_opts) do
     quote do
-      import unquote(__MODULE__), only: [format_telemetry_docs: 1, telemetry_event: 1]
+      import unquote(__MODULE__), only: [telemetry_docs: 0, telemetry_event: 1]
 
       Module.register_attribute(__MODULE__, :telemetry_event,
         accumulate: true,
         persist: true
       )
-
-      Module.register_attribute(__MODULE__, :telemetry_docs,
-        accumulate: true,
-        persist: true
-      )
     end
   end
 
   @doc """
-  Declares a telemetry event. Accepts a telemetry event definition or telemetry event name. A full
-  definition is required for complete documentation and is highly encouraged.
+  Declares a telemetry event. Accepts a telemetry event definition `t:event_definition/0` or telemetry
+  event name `t:event/0`. A full definition is required for complete documentation and is highly encouraged.
   """
   defmacro telemetry_event(event) do
-    docstring =
-      case event do
-        event when is_list(event) ->
-          """
-          * `#{inspect(event)}`
-
-          """
-
-        {:%{}, _, event} ->
-          """
-          * `#{inspect(event[:event])}`
-            * Description: #{event[:description]}
-            * Measurements: `#{event[:measurements]}`
-            * Metadata: `#{event[:metadata]}`
-
-          """
-      end
-
     quote do
       @telemetry_event unquote(event)
-      @telemetry_docs unquote(docstring)
     end
   end
 
   @doc """
-  Formats telemetry definitions declared in the module for inclusion in documentation.
-
-  Example
+  Generates telemetry event documentation formatted in Markdown for use in your documentation.
 
   ```
   ## Telemetry
 
-  #{format_telemetry_docs(@telemetry_docs)}
+  \#{telemetry_docs()}
   ```
   """
-  @spec format_telemetry_docs([String.t()]) :: String.t()
-  def format_telemetry_docs(docs), do: Enum.reverse(docs) |> IO.iodata_to_binary()
+  defmacro telemetry_docs do
+    quote do
+      TelemetryRegistry.__docs__(__MODULE__)
+    end
+  end
+
+  @doc false
+  def __docs__(module) do
+    docs_for(module)
+  end
+
+  @doc """
+  Generate telemetry event documentation formatted in Markdown for a given module.
+  """
+  @spec docs_for(module()) :: String.t()
+  def docs_for(module) do
+    get_events(module)
+    |> Enum.map(&format_event/1)
+    |> IO.iodata_to_binary()
+  end
+
+  defp format_event(event) when is_map(event) do
+    """
+    * `#{inspect(event[:event])}`
+      * Description: #{event[:description]}
+      * Measurements: `#{event[:measurements]}`
+      * Metadata: `#{event[:metadata]}`
+
+    """
+  end
+
+  defp format_event(event) when is_list(event) do
+    """
+    * `#{inspect(event)}`
+
+    """
+  end
+
+  defp get_events(module) do
+    try do
+      Module.get_attribute(module, :telemetry_event, [])
+    rescue
+      _ ->
+        module.__info__(:attributes)
+        |> Keyword.get_values(:telemetry_event)
+        |> Enum.map(fn [event] when is_map(event) -> event
+        event -> event
+      end)
+    end
+  end
 
   @doc """
   Discover all declared telemetry events in the application it is invoked from and all child applications.

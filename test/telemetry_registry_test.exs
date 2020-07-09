@@ -2,17 +2,6 @@ defmodule TelemetryRegistryTest do
   use ExUnit.Case
 
   test "multiple event attributes are persisted for Elixir modules along with docs" do
-    attrs = TestElixirApp.__info__(:attributes)
-    events = Enum.filter(attrs, &match?({:telemetry_event, _}, &1))
-    assert length(events) == 2
-
-    event_docs =
-      Enum.filter(attrs, &match?({:telemetry_docs, _}, &1))
-      |> Enum.map(&elem(&1, 1))
-      |> Enum.reverse()
-
-    assert length(event_docs) == 2
-
     expected_docs = """
     * `[:test_elixir_app, :event, :stop]`
 
@@ -23,6 +12,8 @@ defmodule TelemetryRegistryTest do
 
     """
 
-    assert TelemetryRegistry.format_telemetry_docs(event_docs) == expected_docs
+    docs = TelemetryRegistry.docs_for(TestElixirApp)
+
+    assert docs == expected_docs
   end
 end
