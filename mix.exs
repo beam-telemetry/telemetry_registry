@@ -40,7 +40,7 @@ defmodule TelemetryRegistry.MixProject do
   end
 
   defp elixirc_paths(:test), do: ["lib", "test/support"]
-  defp elixirc_paths(_), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
 
   # Run "mix help compile.app" to learn about applications.
   def application do
@@ -66,7 +66,7 @@ defmodule TelemetryRegistry.MixProject do
       description: "Registry and helpers for Telemetry events",
       build_tools: ["rebar3", "mix"],
       files:
-        ~w(lib mix.exs README.md LICENSE CODEOWNERS rebar.config rebar.lock VERSION include src),
+        ~w(lib mix.exs README.md LICENSE CODEOWNERS rebar.config rebar.lock VERSION src),
       licenses: ["Apache-2.0"],
       links: %{"GitHub" => "https://github.com/beam-telemetry/telemetry_registry"}
     ]
