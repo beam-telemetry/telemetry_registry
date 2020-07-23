@@ -18,8 +18,3 @@
                    measurements => <<"#{duration => non_neg_integer()}">>,
                    metadata => <<"#{kind => atom(), reason => atom(), stacktrace => term()}">>
                   }.
-
--telemetry_event [test_app, only, stop].
-
--telemetry_event [test_app, cache, miss].
--telemetry_event [test_app, cache, hit].

@@ -127,9 +127,6 @@ assert_event([Event]) when is_map(Event) ->
     assert_measurements(EventMeta),
     assert_metadata(EventMeta),
     {EventName, EventMeta};
-assert_event(Event) when is_list(Event) ->
-    assert_event_name(Event),
-    {Event, #{}};
 assert_event(Term) ->
     erlang:error(badarg, Term).
 

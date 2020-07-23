@@ -3,8 +3,6 @@ defmodule TelemetryRegistryTest do
 
   test "multiple event attributes are persisted for Elixir modules along with docs" do
     expected_docs = """
-    * `[:test_elixir_app, :event, :stop]`
-
     * `[:test_elixir_app, :single, :event]`
       * Description: emitted when this event happens
       * Measurements: `%{duration: non_neg_integer()}`

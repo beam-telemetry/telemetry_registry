@@ -7,8 +7,7 @@ defmodule TelemetryRegistry do
 
   Users want to know what telemetry events are available in your library, what they mean, as well as what
   the measurements and metadata maps contain. TelemetryRegistry creates an official standard and mechanism
-  for telemetry event declaration and optional definition. It is _highly_ encouraged to use the definition
-  format for your users.
+  for telemetry event declaration and definition.
 
   ### Who Should Document Events?
 
@@ -28,8 +27,7 @@ defmodule TelemetryRegistry do
   ### Event Definition Format
 
   Events are declared using the `telemetry_event` module attribute. The attribute accepts an event definition
-  or a plain event, though plain events are discouraged. These definitions are used for producing documentation
-  and event discovery. All definition keys are required.
+  which are used for producing documentation and event discovery. All definition keys are required.
 
   ```elixir
   %{
@@ -65,16 +63,14 @@ defmodule TelemetryRegistry do
       metadata: "%{status: status(), name: String.t()}"
     }
 
-    telemetry_event [:test_elixir_app, :event, :stop]
+    @moduledoc \"""
+    Module documentation...
 
-  @moduledoc \"""
-  Module documentation...
+    ## Telemetry
 
-  ## Telemetry
+    \#{telemetry_docs()}
 
-  \#{telemetry_docs()}
-
-  \"""
+    \"""
   end
   ```
 
@@ -162,8 +158,7 @@ defmodule TelemetryRegistry do
   end
 
   @doc """
-  Declares a telemetry event. Accepts a telemetry event definition `t:event_definition/0` or telemetry
-  event name `t:event/0`. A full definition is required for complete documentation and is highly encouraged.
+  Declares a telemetry event. Accepts a telemetry event definition `t:event_definition/0`.
   """
   defmacro telemetry_event(event) do
     quote do
@@ -173,22 +168,11 @@ defmodule TelemetryRegistry do
 
   @doc """
   Generates telemetry event documentation formatted in Markdown for use in your documentation.
-
-  ```
-  ## Telemetry
-
-  \#{telemetry_docs()}
-  ```
   """
   defmacro telemetry_docs do
     quote do
-      TelemetryRegistry.__docs__(__MODULE__)
+      TelemetryRegistry.docs_for(__MODULE__)
     end
-  end
-
-  @doc false
-  def __docs__(module) do
-    docs_for(module)
   end
 
   @doc """
@@ -225,9 +209,11 @@ defmodule TelemetryRegistry do
       _ ->
         module.__info__(:attributes)
         |> Keyword.get_values(:telemetry_event)
-        |> Enum.map(fn [event] when is_map(event) -> event
-        event -> event
-      end)
+        |> List.flatten()
+        |> Enum.map(fn
+          [event] when is_map(event) -> event
+          event -> event
+        end)
     end
   end
 
@@ -253,7 +239,7 @@ defmodule TelemetryRegistry do
 
   ```
     iex> TelemetryRegistry.list_events()
-    [{[:my_app, :request, :stop], %{description: "Event description", measurements: "Measurements description, metadata: "Metadata description"}}]
+    [{%{description: "Event description", measurements: "Measurements description, metadata: "Metadata description"}}]
   ```
   """
   @spec list_events() :: [event()]
