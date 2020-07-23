@@ -62,26 +62,26 @@ workflows:
   build_and_test_erlang:
     jobs:
       - telemetry_registry/build_and_test_erlang:
-          name: "otp-22"
+          name: "erlang-otp-22"
           version: "22"
       - telemetry_registry/build_and_test_erlang:
-          name: "otp-21"
+          name: "erlang-otp-21"
           version: "21"
 
   build_and_test_elixir:
     jobs:
       - telemetry_registry/build_and_test_elixir:
-          name: "1.10-otp-22"
+          name: "elixir-1.10-otp-22"
           elixir: "1.10.0"
           otp: "22"
           codecov_flag: "1_10_otp22"
       - telemetry_registry/build_and_test_elixir:
-          name: "1.10-otp-21"
+          name: "elixir-1.10-otp-21"
           elixir: "1.10.0"
           otp: "21"
           codecov_flag: "1_10_otp21"
       - telemetry_registry/build_and_test_elixir:
-          name: "1.8-otp-21"
+          name: "elixir-1.8-otp-21"
           elixir: "1.8.2"
           otp: "21"
           codecov_flag: "1_6_otp21"
