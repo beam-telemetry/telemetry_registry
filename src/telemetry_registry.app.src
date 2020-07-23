@@ -1,6 +1,6 @@
 {application, telemetry_registry,
- [{description, "An OTP application"},
-  {vsn, "0.1.0"},
+ [{description, "A library for telemetry event declaration, discovery, and registration."},
+  {vsn, "0.2.0"},
   {registered, []},
   {mod, []},
   {applications,

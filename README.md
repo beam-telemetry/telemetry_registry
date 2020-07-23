@@ -1,32 +1,41 @@
+[![EEF Observability WG project](https://img.shields.io/badge/EEF-Observability-black)](https://github.com/erlef/eef-observability-wg)
+[![Hex.pm](https://img.shields.io/hexpm/v/telemetry_registry)](https://hex.pm/packages/telemetry_registry)
+
 # Telemetry Registry
 
-***IMPORTANT: Experimental Library!!!***
-
-This is an experimental library for Telemetry event discovery and registration. It is subject
-to drastic changes at any time. It could eventually be published, rolled into the `telemetry`
-library, or deleted.
-
-The goal of this library is to determine a viable mechanism and patterns for event discovery
-for usage in automating distributed tracing (OTel) via `telemetry` events, as well as event
-documentation.
-
-**DO NOT use this in production** but **_DO_** contribute your thoughts and feedback in the
-issues!
+TelemetryRegistry is a library for Telemetry event declaration, discovery, and registration. Events
+are declared using the module attribute `telemetry_event` and include a description of the event,
+measurements, and metadata.
 
 ## How It Works
 
-The Registry works by walking your entire application tree and examining every module for
-Telemetry Event definitions.
+The Registry works by walking an application tree and examining every module for Telemetry Event definitions
+when invoking the discovery feature.
 
 ```erlang
--telemetry_event [test_app, handler, start].
--telemetry_event [test_app, handler, exception].
--telemetry_event [test_app, handler, stop].
+-telemetry_event #{
+                   event => [test_app, handler, start],
+                   description => <<"Emitted at the start of the handler">>,
+                   measurements => <<"#{system_time => non_neg_integer()}">>,
+                   metadata => <<"#{}">>
+                  }.
+-telemetry_event #{
+                   event => [test_app, handler, stop],
+                   description => <<"Emitted at the end of the handler">>,
+                   measurements => <<"#{duration => non_neg_integer()}">>,
+                   metadata => <<"#{}">>
+                  }.
+-telemetry_event #{
+                   event => [test_app, handler, exception],
+                   description => <<"The handler raised an exception">>,
+                   measurements => <<"#{duration => non_neg_integer()}">>,
+                   metadata => <<"#{kind => atom(), reason => atom(), stacktrace => term()}">>
+                  }.
 ```
 
 ### Add the Registry to Your Application
 
-After your applications are loaded just run
+After the applications are loaded, simply run
 
 ```erlang
 telemetry_registry:discover_all(my_app).
@@ -41,8 +50,8 @@ telemetry_registry:discover_all().
 ### Viewing Events
 
 The defined events can be accessed using `list_events/0`. Events are returned as a list of
-two element tuples of `{Event, Module}` where `Event` is the event name and `Module` is the
-module it was discovered in.
+three element tuples of `{Event, Module, Meta}` where `Event` is the event name, `Module` is the
+module it was discovered in, and Meta is the event definition metadata.
 
 ```erlang
 telemetry_registry:list_events().
@@ -52,35 +61,31 @@ telemetry_registry:list_events().
 
 Tracing spans need at least a matching `start` and `stop` event to create a child span.
 Optionally, a `exception` event can be emitted in the case of an exception being raised.
-`spannable_events/0` returns a map of all matching (spannable) events that have been
-discovered. These are returned as a map with keys being the event prefix and the value
-being a list of the available events, e.g. `#{[test_app,handler] => [start,stop,exception]}`.
+`spannable_events/0` returns a proplist of all matching (spannable) events that have been
+discovered. These are returned as a proplist with keys being the event prefix and the value
+being a list of the available events, e.g. `[{[test_app,handler], [start,stop,exception]}]`.
 
 ```erlang
 telemetry_registry:spannable_events().
-%% #{[test_app,handler] => [start,stop,exception]}
+%% [{[test_app,handler], [start,stop,exception]}]
 ```
 
-## Roadmap
+## Elixir Users
 
-A few ideas that need to be tested are:
+A variety of macros to assist with event declaration and generating telemetry event documentation
+are available. Please refer to the [HexDocs](https://hex.pm/packages/opentelemetry_api) for more
+information.
 
-### Event Definitions
+### Dependency in Elixir
 
-One of the biggest issues facing users is discovering what events are available in a library,
-the names of them, when they are emitted, and what the measurements and metadata contain.
-Measurements and metadata are probably most helpful in documentation when it resembles a
-typespec.
+``` elixir
+def deps do
+  [
+    {:telemetry_registry, "~> 0.2.0"}
+  ]
+end
+```
 
-Currently, this is all done by hand in a section the user has hopefully included in their docs.
-Ideally, this could be an automatically generated section, much the same as `callbacks`, `types`,
-`functions`, etc. which we currently enjoy in HexDocs.
+Copyright 2020 Bryan Naegele
 
-Definitions could double for an event discovery mechanism, so this serves both use cases
-if done well. The question is what the shape of that definition is, if it could leverage
-(or just use) types for the event, and how it works in each language.
-
-### Shorthand Definition
-
-e.g. `-telemetry_events {prefix, [event1,event2]}`. This could be a separate attribute name or
-macro.
+TelemetryRegistry source code is released under Apache License, Version 2.0.
