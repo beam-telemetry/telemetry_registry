@@ -82,6 +82,6 @@ workflows:
           codecov_flag: "1_10_otp21"
       - telemetry_registry/build_and_test_elixir:
           name: "1.8-otp-21"
-          elixir: "1.6.6"
+          elixir: "1.8.2"
           otp: "21"
           codecov_flag: "1_6_otp21"
