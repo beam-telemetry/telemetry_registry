@@ -114,13 +114,21 @@ gather_application_events(Application) ->
 
 -spec events_for_module(atom()) -> [telemetry:event_name() | event_definition()].
 events_for_module(Module) ->
-    Info = Module:module_info(),
-    Attributes = proplists:get_value(attributes, Info),
-    Events = proplists:get_all_values(telemetry_event, Attributes),
+    Attributes = case code:is_loaded(Module) of
+                     {file, _} -> Module:module_info(attributes);
+                     _ ->
+                         case code:get_object_code(Module) of
+                             {Module, Binary, _} ->
+                                 {ok, {_, [{attributes, Data}]}} = beam_lib:chunks(Binary, [attributes]),
+                                 Data;
+                             _ -> []
+                         end
+                 end,
+    Events = lists:flatten(proplists:get_all_values(telemetry_event, Attributes)),
     [{EventName, Module, EventMeta} || {EventName, EventMeta} <- [assert_event(Event) || Event <- Events]].
 
 -spec assert_event(term()) -> {telemetry:event_name(), event_meta()} | no_return().
-assert_event([Event]) when is_map(Event) ->
+assert_event(Event) when is_map(Event) ->
     {EventName, EventMeta} = maps:take(event, Event),
     assert_event_name(EventName),
     assert_description(EventMeta),
@@ -145,7 +153,6 @@ assert_event_name(Term) ->
 assert_description(#{description := Description}) when is_binary(Description) ->
     ok;
 assert_description(Term) ->
-    erlang:display(Term),
     erlang:error(badarg, Term).
 
 -spec assert_measurements(term()) -> ok | no_return().
