@@ -8,7 +8,8 @@
 all() -> [
   discovers_all_events,
   determines_spannable_events,
-  supports_event_definitions
+  supports_event_definitions,
+  dont_load_unloaded_modules
 ].
 
 init_per_suite(Config) ->
@@ -44,3 +45,9 @@ supports_event_definitions(_Config) ->
     ?assert(is_binary(Description)),
     ?assert(is_binary(Measurements)),
     ?assert(is_binary(Metadata)).
+
+dont_load_unloaded_modules(_Config) ->
+    code:delete(memsup),
+    ?assertNot(code:is_loaded(memsup)),
+    _ = telemetry_registry:discover_all(),
+    ?assertNot(code:is_loaded(memsup)).
