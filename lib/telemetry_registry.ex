@@ -204,7 +204,7 @@ defmodule TelemetryRegistry do
 
   defp get_events(module) do
     try do
-      Module.get_attribute(module, :telemetry_event, [])
+      Module.get_attribute(module, :telemetry_event, []) |> Enum.reverse()
     rescue
       _ ->
         module.__info__(:attributes)
