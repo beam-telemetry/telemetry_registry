@@ -73,7 +73,7 @@ telemetry_registry:spannable_events().
 ## Elixir Users
 
 A variety of macros to assist with event declaration and generating telemetry event documentation
-are available. Please refer to the [HexDocs](https://hex.pm/packages/opentelemetry_api) for more
+are available. Please refer to the [HexDocs](https://hex.pm/packages/telemetry_registry) for more
 information.
 
 ### Dependency in Elixir
@@ -81,7 +81,7 @@ information.
 ``` elixir
 def deps do
   [
-    {:telemetry_registry, "~> 0.2.1"}
+    {:telemetry_registry, "~> 0.2"}
   ]
 end
 ```
