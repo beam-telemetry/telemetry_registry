@@ -56,6 +56,7 @@ defmodule TelemetryRegistry.MixProject do
       dep when is_atom(dep) -> {dep, ">= 0.0.0"}
     end)
     |> Enum.concat([
+      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
       {:cmark, "~> 0.7", only: :dev, runtime: false},
       {:ex_doc, "~> 0.21.3", only: :dev, runtime: false}
     ])
