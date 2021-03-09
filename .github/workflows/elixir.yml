@@ -42,30 +42,30 @@ jobs:
       run: mix format
     - name: Common Test tests
       run: mix test
-  dialyzer:
-    name: Dialyze on ${{ matrix.elixir }} OTP ${{ matrix.otp_version }} and ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        otp_version: ['23.2.1', '21.3.8.17']
-        elixir: ['1.10.4', '1.11.3']
-        os: [ubuntu-latest]
-    steps:
-    - uses: actions/checkout@v2
-    - uses: erlef/setup-elixir@v1
-      with:
-        otp-version: ${{ matrix.otp_version }}
-        elixir-version: ${{ matrix.elixir }}
-    - uses: actions/cache@v2
-      name: Cache
-      with:
-        path: |
-          _build
-          deps
-        key: ${{ runner.os }}-dialyzer-${{ matrix.elixir }}-${{ matrix.otp_version }}-${{ hashFiles('mix.lock') }}-1
-        restore-keys: |
-          ${{ runner.os }}-dialyzer-${{ matrix.elixir }}-${{ matrix.otp_version }}-1-
-    - name: Deps
-      run: mix deps.get
-    - name: Dialyzer
-      run: mix dialyzer
+#  dialyzer:
+#    name: Dialyze on ${{ matrix.elixir }} OTP ${{ matrix.otp_version }} and ${{ matrix.os }}
+#    runs-on: ${{ matrix.os }}
+#    strategy:
+#      matrix:
+#        otp_version: ['23.2.1', '21.3.8.17']
+#        elixir: ['1.10.4', '1.11.3']
+#        os: [ubuntu-latest]
+#    steps:
+#    - uses: actions/checkout@v2
+#    - uses: erlef/setup-elixir@v1
+#      with:
+#        otp-version: ${{ matrix.otp_version }}
+#        elixir-version: ${{ matrix.elixir }}
+#    - uses: actions/cache@v2
+#      name: Cache
+#      with:
+#        path: |
+#          _build
+#          deps
+#        key: ${{ runner.os }}-dialyzer-${{ matrix.elixir }}-${{ matrix.otp_version }}-${{ hashFiles('mix.lock') }}-1
+#        restore-keys: |
+#          ${{ runner.os }}-dialyzer-${{ matrix.elixir }}-${{ matrix.otp_version }}-1-
+#    - name: Deps
+#      run: mix deps.get
+#    - name: Dialyzer
+#      run: mix dialyzer
