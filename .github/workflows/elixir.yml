@@ -30,9 +30,12 @@ jobs:
       with:
         path: |
           _build
+          deps
         key: ${{ runner.os }}-build-elixir-${{ matrix.elixir }}-${{ matrix.otp_version }}-${{ hashFiles(format('mix.lock')) }}-1
         restore-keys: |
           ${{ runner.os }}-build-elixir-${{ matrix.elixir }}-${{ matrix.otp_version }}-1-
+    - name: Deps
+      run: mix deps.get
     - name: Compile
       run: mix compile
     - name: Format
@@ -58,8 +61,11 @@ jobs:
       with:
         path: |
           _build
+          deps
         key: ${{ runner.os }}-dialyzer-${{ matrix.elixir }}-${{ matrix.otp_version }}-${{ hashFiles('mix.lock') }}-1
         restore-keys: |
           ${{ runner.os }}-dialyzer-${{ matrix.elixir }}-${{ matrix.otp_version }}-1-
+    - name: Deps
+      run: mix deps.get
     - name: Dialyzer
       run: mix dialyzer
