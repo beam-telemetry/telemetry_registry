@@ -81,7 +81,7 @@ information.
 ``` elixir
 def deps do
   [
-    {:telemetry_registry, "~> 0.2"}
+    {:telemetry_registry, "~> 0.3"}
   ]
 end
 ```

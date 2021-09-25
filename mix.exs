@@ -16,7 +16,6 @@ defmodule TelemetryRegistry.MixProject do
       name: "Telemetry Registry",
       source_url: "https://github.com/beam-telemetry/telemetry_registry",
       docs: [
-        markdown_processor: ExDoc.Markdown.Cmark,
         main: "TelemetryRegistry",
         # logo: "path/to/logo.png",
         extras: erlang_docs()
@@ -56,9 +55,7 @@ defmodule TelemetryRegistry.MixProject do
       dep when is_atom(dep) -> {dep, ">= 0.0.0"}
     end)
     |> Enum.concat([
-      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
-      {:cmark, "~> 0.7", only: :dev, runtime: false},
-      {:ex_doc, "~> 0.21.3", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.25", only: :dev, runtime: false}
     ])
   end
 
