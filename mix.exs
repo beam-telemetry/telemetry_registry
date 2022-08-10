@@ -64,7 +64,7 @@ defmodule TelemetryRegistry.MixProject do
       description: "Registry and helpers for Telemetry events",
       build_tools: ["rebar3", "mix"],
       files:
-        ~w(lib mix.exs README.md LICENSE CODEOWNERS rebar.config rebar.lock VERSION src),
+        ~w(lib mix.exs README.md LICENSE CODEOWNERS rebar.config rebar.lock VERSION src .formatter.exs),
       licenses: ["Apache-2.0"],
       links: %{"GitHub" => "https://github.com/beam-telemetry/telemetry_registry"}
     ]
