@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: Test on OTP ${{ matrix.otp_version }} and ${{ matrix.os }}
+    name: Test Erlang on OTP ${{ matrix.otp_version }} and ${{ matrix.os_version }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:

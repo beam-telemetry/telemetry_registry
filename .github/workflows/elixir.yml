@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: Test on ${{ matrix.elixir }} OTP ${{ matrix.otp_version }} and ${{ matrix.os }}
+    name: Test Elixir ${{ matrix.elixir_version }} OTP ${{ matrix.otp_version }} and ${{ matrix.os_version }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
