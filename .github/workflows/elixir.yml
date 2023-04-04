@@ -19,7 +19,7 @@ jobs:
             elixir_version: "1.14.4"
             os: ubuntu-22.04
           - otp_version: "22.3"
-            elixir_version: "22.3"
+            elixir_version: "1.10"
             os: ubuntu-20.04
     env:
       OTP_VERSION: ${{ matrix.otp_version }}
