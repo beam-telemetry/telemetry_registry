@@ -14,13 +14,18 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        otp_version: ['23.2.1', '22.3.4.9', '21.3.8.17']
-        os: [ubuntu-latest]
+        os: [ubuntu-22.04]
+        rebar3_version: ["3.20.0"]
+        include:
+          - otp_version: "23.3.4.18"
+            rebar3_version: "3.20.0"
+          - otp_version: "22.3.4.26"
+            rebar3_version: "3.18.0"
     env:
       OTP_VERSION: ${{ matrix.otp_version }}
     steps:
     - uses: actions/checkout@v2
-    - uses: gleam-lang/setup-erlang@v1.1.2
+    - uses: gleam-lang/setup-beam@v1
       with:
         otp-version: ${{ matrix.otp_version }}
     - uses: actions/cache@v2
