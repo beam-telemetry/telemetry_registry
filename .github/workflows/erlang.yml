@@ -25,7 +25,7 @@ jobs:
       OTP_VERSION: ${{ matrix.otp_version }}
     steps:
     - uses: actions/checkout@v2
-    - uses: gleam-lang/setup-beam@v1
+    - uses: erlef/setup-beam@v1
       with:
         otp-version: ${{ matrix.otp_version }}
     - uses: actions/cache@v2
