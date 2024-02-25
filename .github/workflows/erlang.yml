@@ -10,19 +10,25 @@ on:
 
 jobs:
   build:
-    name: Test on OTP ${{ matrix.otp_version }} and ${{ matrix.os }}
+    name: Test Erlang on OTP ${{ matrix.otp_version }} and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        otp_version: ['23.2.1', '22.3.4.9', '21.3.8.17']
-        os: [ubuntu-latest]
+        include:
+          - otp_version: "25.3"
+            os: ubuntu-22.04
+            rebar3_version: "3.20"
+          - otp_version: "22.3"
+            os: ubuntu-20.04
+            rebar3_version: "3.18.0"
     env:
       OTP_VERSION: ${{ matrix.otp_version }}
     steps:
     - uses: actions/checkout@v2
-    - uses: gleam-lang/setup-erlang@v1.1.2
+    - uses: erlef/setup-beam@v1
       with:
         otp-version: ${{ matrix.otp_version }}
+        rebar3-version: ${{ matrix.rebar3_version }}
     - uses: actions/cache@v2
       name: Cache
       with:

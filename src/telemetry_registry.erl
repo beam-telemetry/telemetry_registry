@@ -6,16 +6,6 @@
          list_events/0,
          spannable_events/0]).
 
--export_type([application/0,
-              event/0,
-              event_definition/0,
-              event_description/0,
-              event_measurements/0,
-              event_metadata/0,
-              event_meta/0,
-              spannable_event/0
-             ]).
-
 -define(KEY, ?MODULE).
 
 -type application() :: atom().
@@ -35,6 +25,17 @@
                               metadata := event_metadata()
                              } | #{}.
 -type spannable_event() :: {telemetry:prefix(), [atom()]}.
+
+-export_type([application/0,
+              event/0,
+              event_definition/0,
+              event_description/0,
+              event_measurements/0,
+              event_metadata/0,
+              event_meta/0,
+              spannable_event/0
+             ]).
+
 
 %% @doc Returns a list of all registered events.
 -spec list_events() -> [event()].
