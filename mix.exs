@@ -80,13 +80,13 @@ defmodule TelemetryRegistry.MixProject do
   end
 
   defp load_config do
-    {:ok, config} = :file.consult('rebar.config')
+    {:ok, config} = :file.consult("rebar.config")
 
     config
   end
 
   defp load_app do
-    {:ok, [{:application, name, desc}]} = :file.consult('src/telemetry_registry.app.src')
+    {:ok, [{:application, name, desc}]} = :file.consult("src/telemetry_registry.app.src")
 
     {name, desc}
   end
